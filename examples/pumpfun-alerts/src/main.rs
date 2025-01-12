@@ -3,50 +3,65 @@ use carbon_core::{
     error::CarbonResult, instruction::InstructionProcessorInputType, metrics::MetricsCollection,
     processor::Processor,
 };
+
 use carbon_pumpfun_decoder::{instructions::PumpfunInstruction, PumpfunDecoder};
-use helius::types::{
-    RpcTransactionsConfig, TransactionCommitment, TransactionDetails, TransactionSubscribeFilter,
-    TransactionSubscribeOptions, UiEnhancedTransactionEncoding,
-};
+use carbon_yellowstone_grpc_datasource::YellowstoneGrpcGeyserClient;
 use solana_sdk::pubkey;
 use solana_sdk::{native_token::LAMPORTS_PER_SOL, pubkey::Pubkey};
-use std::{collections::HashSet, sync::Arc};
+use std::{
+    collections::{HashMap, HashSet},
+    env,
+    sync::Arc,
+};
 use tokio::sync::RwLock;
+use yellowstone_grpc_proto::geyser::{
+    CommitmentLevel, SubscribeRequestFilterAccounts, SubscribeRequestFilterTransactions,
+};
 
 pub const PUMPFUN_PROGRAM_ID: Pubkey = pubkey!("6EF8rrecthR5Dkzon8Nwu78hRvfCKubJ14M5uBEwF6P");
 
 #[tokio::main]
 pub async fn main() -> CarbonResult<()> {
-    dotenv::dotenv().ok();
+    dotenvy::dotenv().ok();
     env_logger::init();
 
-    let helius_websocket = carbon_helius_atlas_ws_datasource::HeliusWebsocket::new(
-        std::env::var("API_KEY").unwrap(),
-        carbon_helius_atlas_ws_datasource::Filters {
-            accounts: vec![],
-            transactions: Some(RpcTransactionsConfig {
-                filter: TransactionSubscribeFilter {
-                    account_include: Some(vec![PUMPFUN_PROGRAM_ID.to_string().clone()]),
-                    account_exclude: None,
-                    account_required: None,
-                    vote: None,
-                    failed: None,
-                    signature: None,
-                },
-                options: TransactionSubscribeOptions {
-                    commitment: Some(TransactionCommitment::Confirmed),
-                    encoding: Some(UiEnhancedTransactionEncoding::Base64),
-                    transaction_details: Some(TransactionDetails::Full),
-                    show_rewards: None,
-                    max_supported_transaction_version: Some(0),
-                },
-            }),
+    let mut account_filters: HashMap<String, SubscribeRequestFilterAccounts> = HashMap::new();
+    account_filters.insert(
+        "pumpfun_account_filter".to_string(),
+        SubscribeRequestFilterAccounts {
+            account: vec![],
+            owner: vec![PUMPFUN_PROGRAM_ID.to_string().clone()],
+            filters: vec![],
+            nonempty_txn_signature: None,
         },
+    );
+
+    let transaction_filter = SubscribeRequestFilterTransactions {
+        vote: Some(false),
+        failed: Some(false),
+        account_include: vec![],
+        account_exclude: vec![],
+        account_required: vec![PUMPFUN_PROGRAM_ID.to_string().clone()],
+        signature: None,
+    };
+
+    let mut transaction_filters: HashMap<String, SubscribeRequestFilterTransactions> =
+        HashMap::new();
+
+    transaction_filters.insert("raydium_transaction_filter".to_string(), transaction_filter);
+
+    println!("GEYSER_URL: {}", env::var("GEYSER_URL").unwrap_or_default());
+    let yellowstone_grpc = YellowstoneGrpcGeyserClient::new(
+        env::var("GEYSER_URL").unwrap_or_default(),
+        env::var("X_TOKEN").ok(),
+        Some(CommitmentLevel::Confirmed),
+        account_filters,
+        transaction_filters,
         Arc::new(RwLock::new(HashSet::new())),
     );
 
     carbon_core::pipeline::Pipeline::builder()
-        .datasource(helius_websocket)
+        .datasource(yellowstone_grpc)
         .instruction(PumpfunDecoder, PumpfunInstructionProcessor)
         .build()?
         .run()

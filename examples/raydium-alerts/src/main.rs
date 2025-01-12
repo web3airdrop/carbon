@@ -10,7 +10,8 @@ use carbon_raydium_amm_v4_decoder::{
     accounts::RaydiumAmmV4Account, instructions::RaydiumAmmV4Instruction, RaydiumAmmV4Decoder,
 };
 use carbon_yellowstone_grpc_datasource::YellowstoneGrpcGeyserClient;
-use solana_sdk::{pubkey, pubkey::Pubkey};
+use solana_sdk::pubkey;
+use solana_sdk::pubkey::Pubkey;
 use std::{
     collections::{HashMap, HashSet},
     env,
@@ -54,6 +55,7 @@ pub async fn main() -> CarbonResult<()> {
 
     transaction_filters.insert("raydium_transaction_filter".to_string(), transaction_filter);
 
+    println!("GEYSER_URL: {}", env::var("GEYSER_URL").unwrap_or_default());
     let yellowstone_grpc = YellowstoneGrpcGeyserClient::new(
         env::var("GEYSER_URL").unwrap_or_default(),
         env::var("X_TOKEN").ok(),
@@ -101,16 +103,10 @@ impl Processor for RaydiumAmmV4InstructionProcessor {
                 );
             }
             RaydiumAmmV4Instruction::SwapBaseIn(swap) => {
-                println!(
-                    "\nsignature: {:#?}\nSwap: {:#?}",
-                    signature, swap
-                );
+                println!("\nsignature: {:#?}\nSwap: {:#?}", signature, swap);
             }
             RaydiumAmmV4Instruction::SwapBaseOut(swap) => {
-                println!(
-                    "\nsignature: {:#?}\nSwap: {:#?}",
-                    signature, swap
-                );
+                println!("\nsignature: {:#?}\nSwap: {:#?}", signature, swap);
             }
             _ => {}
         };
