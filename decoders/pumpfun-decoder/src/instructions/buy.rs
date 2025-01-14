@@ -1,4 +1,5 @@
 use carbon_core::{borsh, CarbonDeserialize};
+use solana_sdk::pubkey::Pubkey;
 #[derive(
     CarbonDeserialize, Debug, serde::Serialize, serde::Deserialize, PartialEq, Eq, Clone, Hash,
 )]
@@ -8,6 +9,9 @@ pub struct Buy {
     pub max_sol_cost: u64,
 }
 
+#[derive(
+    CarbonDeserialize, Debug, serde::Serialize, serde::Deserialize, PartialEq, Eq, Clone, Hash,
+)]
 pub struct BuyInstructionAccounts {
     pub global: solana_sdk::pubkey::Pubkey,
     pub fee_recipient: solana_sdk::pubkey::Pubkey,
@@ -26,7 +30,7 @@ pub struct BuyInstructionAccounts {
 impl carbon_core::deserialize::ArrangeAccounts for Buy {
     type ArrangedAccounts = BuyInstructionAccounts;
 
-fn arrange_accounts(
+    fn arrange_accounts(
         accounts: Vec<solana_sdk::instruction::AccountMeta>,
     ) -> Option<Self::ArrangedAccounts> {
         let global = accounts.get(0)?;

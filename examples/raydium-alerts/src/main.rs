@@ -1,13 +1,16 @@
 use async_trait::async_trait;
 use carbon_core::{
     account::{AccountMetadata, DecodedAccount},
+    deserialize::ArrangeAccounts,
     error::CarbonResult,
     instruction::{DecodedInstruction, InstructionMetadata, NestedInstruction},
     metrics::MetricsCollection,
     processor::Processor,
 };
 use carbon_raydium_amm_v4_decoder::{
-    accounts::RaydiumAmmV4Account, instructions::RaydiumAmmV4Instruction, RaydiumAmmV4Decoder,
+    accounts::RaydiumAmmV4Account,
+    instructions::{swap_base_in::SwapBaseIn, RaydiumAmmV4Instruction},
+    RaydiumAmmV4Decoder,
 };
 use carbon_yellowstone_grpc_datasource::YellowstoneGrpcGeyserClient;
 use solana_sdk::pubkey;
@@ -103,10 +106,12 @@ impl Processor for RaydiumAmmV4InstructionProcessor {
                 );
             }
             RaydiumAmmV4Instruction::SwapBaseIn(swap) => {
-                println!("\nsignature: {:#?}\nSwap: {:#?}", signature, swap);
+                let arranged_accounts = SwapBaseIn::arrange_accounts(accounts);
+                println!("\nsignature: {:#?}\n SwapIn: {:#?}", signature, swap);
+                println!(" arranged_accounts: {:#?}", arranged_accounts);
             }
             RaydiumAmmV4Instruction::SwapBaseOut(swap) => {
-                println!("\nsignature: {:#?}\nSwap: {:#?}", signature, swap);
+                println!("\nsignature: {:#?}\n SwapOut: {:#?}", signature, swap);
             }
             _ => {}
         };
@@ -126,6 +131,7 @@ impl Processor for RaydiumAmmV4AccountProcessor {
         _metrics: Arc<MetricsCollection>,
     ) -> CarbonResult<()> {
         let account = data.1;
+        // let slot = data.0.slot;
 
         match account.data {
             RaydiumAmmV4Account::AmmInfo(pool) => {

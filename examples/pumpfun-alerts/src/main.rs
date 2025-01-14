@@ -6,6 +6,7 @@ use carbon_core::{
 
 use carbon_pumpfun_decoder::{instructions::PumpfunInstruction, PumpfunDecoder};
 use carbon_yellowstone_grpc_datasource::YellowstoneGrpcGeyserClient;
+use solana_sdk::message::VersionedMessage;
 use solana_sdk::pubkey;
 use solana_sdk::{native_token::LAMPORTS_PER_SOL, pubkey::Pubkey};
 use std::{
@@ -82,18 +83,25 @@ impl Processor for PumpfunInstructionProcessor {
         _metrics: Arc<MetricsCollection>,
     ) -> CarbonResult<()> {
         let pumpfun_instruction: PumpfunInstruction = data.1.data;
+        let metadata = data.0.transaction_metadata;
+
+        let message = metadata.message;
+        let signature = metadata.signature;
 
         match pumpfun_instruction {
             PumpfunInstruction::CreateEvent(create_event) => {
                 println!("\nNew token created: {:#?}", create_event);
             }
             PumpfunInstruction::TradeEvent(trade_event) => {
-                if trade_event.sol_amount > 10 * LAMPORTS_PER_SOL {
+                if trade_event.sol_amount >= 5 * LAMPORTS_PER_SOL {
                     println!("\nBig trade occured: {:#?}", trade_event);
                 }
             }
             PumpfunInstruction::CompleteEvent(complete_event) => {
                 println!("\nBonded: {:#?}", complete_event);
+            }
+            PumpfunInstruction::Buy(buy) => {
+                println!("\n signature: {:#?}\n Buy: {:#?}", signature, buy);
             }
             _ => {}
         };
