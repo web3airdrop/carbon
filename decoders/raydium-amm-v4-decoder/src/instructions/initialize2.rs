@@ -1,4 +1,5 @@
 use carbon_core::{borsh, CarbonDeserialize};
+
 #[derive(
     CarbonDeserialize, Debug, serde::Serialize, serde::Deserialize, PartialEq, Eq, Clone, Hash,
 )]
@@ -10,6 +11,10 @@ pub struct Initialize2 {
     pub init_coin_amount: u64,
 }
 
+#[derive(
+    CarbonDeserialize, Debug, serde::Serialize, serde::Deserialize, PartialEq, Eq, Clone, Hash,
+)]
+#[carbon(discriminator = "0x0111")]
 pub struct Initialize2InstructionAccounts {
     pub token_program: solana_sdk::pubkey::Pubkey,
     pub spl_associated_token_account: solana_sdk::pubkey::Pubkey,
@@ -37,7 +42,7 @@ pub struct Initialize2InstructionAccounts {
 impl carbon_core::deserialize::ArrangeAccounts for Initialize2 {
     type ArrangedAccounts = Initialize2InstructionAccounts;
 
-fn arrange_accounts(
+    fn arrange_accounts(
         accounts: Vec<solana_sdk::instruction::AccountMeta>,
     ) -> Option<Self::ArrangedAccounts> {
         let token_program = accounts.get(0)?;

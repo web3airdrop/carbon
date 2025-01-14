@@ -1,4 +1,5 @@
 use carbon_core::{borsh, CarbonDeserialize};
+
 #[derive(
     CarbonDeserialize, Debug, serde::Serialize, serde::Deserialize, PartialEq, Eq, Clone, Hash,
 )]
@@ -9,6 +10,10 @@ pub struct MonitorStep {
     pub cancel_order_limit: u16,
 }
 
+#[derive(
+    CarbonDeserialize, Debug, serde::Serialize, serde::Deserialize, PartialEq, Eq, Clone, Hash,
+)]
+#[carbon(discriminator = "0x0211")]
 pub struct MonitorStepInstructionAccounts {
     pub token_program: solana_sdk::pubkey::Pubkey,
     pub rent: solana_sdk::pubkey::Pubkey,
@@ -36,7 +41,7 @@ pub struct MonitorStepInstructionAccounts {
 impl carbon_core::deserialize::ArrangeAccounts for MonitorStep {
     type ArrangedAccounts = MonitorStepInstructionAccounts;
 
-fn arrange_accounts(
+    fn arrange_accounts(
         accounts: Vec<solana_sdk::instruction::AccountMeta>,
     ) -> Option<Self::ArrangedAccounts> {
         let token_program = accounts.get(0)?;

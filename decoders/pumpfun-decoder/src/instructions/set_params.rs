@@ -1,4 +1,5 @@
 use carbon_core::{borsh, CarbonDeserialize};
+
 #[derive(
     CarbonDeserialize, Debug, serde::Serialize, serde::Deserialize, PartialEq, Eq, Clone, Hash,
 )]
@@ -12,6 +13,10 @@ pub struct SetParams {
     pub fee_basis_points: u64,
 }
 
+#[derive(
+    CarbonDeserialize, Debug, serde::Serialize, serde::Deserialize, PartialEq, Eq, Clone, Hash,
+)]
+#[carbon(discriminator = "0x1beab2349302bb81")]
 pub struct SetParamsInstructionAccounts {
     pub global: solana_sdk::pubkey::Pubkey,
     pub user: solana_sdk::pubkey::Pubkey,
@@ -23,7 +28,7 @@ pub struct SetParamsInstructionAccounts {
 impl carbon_core::deserialize::ArrangeAccounts for SetParams {
     type ArrangedAccounts = SetParamsInstructionAccounts;
 
-fn arrange_accounts(
+    fn arrange_accounts(
         accounts: Vec<solana_sdk::instruction::AccountMeta>,
     ) -> Option<Self::ArrangedAccounts> {
         let global = accounts.get(0)?;

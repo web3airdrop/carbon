@@ -8,6 +8,10 @@ pub struct Withdraw {
     pub amount: u64,
 }
 
+#[derive(
+    CarbonDeserialize, Debug, serde::Serialize, serde::Deserialize, PartialEq, Eq, Clone, Hash,
+)]
+#[carbon(discriminator = "0x0411")]
 pub struct WithdrawInstructionAccounts {
     pub token_program: solana_sdk::pubkey::Pubkey,
     pub amm: solana_sdk::pubkey::Pubkey,
@@ -35,7 +39,7 @@ pub struct WithdrawInstructionAccounts {
 impl carbon_core::deserialize::ArrangeAccounts for Withdraw {
     type ArrangedAccounts = WithdrawInstructionAccounts;
 
-fn arrange_accounts(
+    fn arrange_accounts(
         accounts: Vec<solana_sdk::instruction::AccountMeta>,
     ) -> Option<Self::ArrangedAccounts> {
         // inspired by https://github.com/raydium-io/raydium-amm/blob/master/program/src/processor.rs#L1882 just wrote differently

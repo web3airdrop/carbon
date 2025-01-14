@@ -9,6 +9,10 @@ pub struct SwapBaseOut {
     pub amount_out: u64,
 }
 
+#[derive(
+    CarbonDeserialize, Debug, serde::Serialize, serde::Deserialize, PartialEq, Eq, Clone, Hash,
+)]
+#[carbon(discriminator = "0x0b11")]
 pub struct SwapBaseOutInstructionAccounts {
     pub spl_token_id: solana_sdk::pubkey::Pubkey,
     pub amm_id: solana_sdk::pubkey::Pubkey,
@@ -33,7 +37,7 @@ pub struct SwapBaseOutInstructionAccounts {
 impl carbon_core::deserialize::ArrangeAccounts for SwapBaseOut {
     type ArrangedAccounts = SwapBaseOutInstructionAccounts;
 
-fn arrange_accounts(
+    fn arrange_accounts(
         accounts: Vec<solana_sdk::instruction::AccountMeta>,
     ) -> Option<Self::ArrangedAccounts> {
         let spl_token_id = accounts.get(0)?;

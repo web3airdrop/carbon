@@ -1,4 +1,5 @@
 use carbon_core::{borsh, CarbonDeserialize};
+
 #[derive(
     CarbonDeserialize, Debug, serde::Serialize, serde::Deserialize, PartialEq, Eq, Clone, Hash,
 )]
@@ -8,6 +9,10 @@ pub struct Sell {
     pub min_sol_output: u64,
 }
 
+#[derive(
+    CarbonDeserialize, Debug, serde::Serialize, serde::Deserialize, PartialEq, Eq, Clone, Hash,
+)]
+#[carbon(discriminator = "0x33e685a4017f83a1")]
 pub struct SellInstructionAccounts {
     pub global: solana_sdk::pubkey::Pubkey,
     pub fee_recipient: solana_sdk::pubkey::Pubkey,
@@ -26,7 +31,7 @@ pub struct SellInstructionAccounts {
 impl carbon_core::deserialize::ArrangeAccounts for Sell {
     type ArrangedAccounts = SellInstructionAccounts;
 
-fn arrange_accounts(
+    fn arrange_accounts(
         accounts: Vec<solana_sdk::instruction::AccountMeta>,
     ) -> Option<Self::ArrangedAccounts> {
         let global = accounts.get(0)?;

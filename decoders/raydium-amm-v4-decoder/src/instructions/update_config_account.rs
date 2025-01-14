@@ -8,6 +8,10 @@ pub struct UpdateConfigAccount {
     pub owner: solana_sdk::pubkey::Pubkey,
 }
 
+#[derive(
+    CarbonDeserialize, Debug, serde::Serialize, serde::Deserialize, PartialEq, Eq, Clone, Hash,
+)]
+#[carbon(discriminator = "0x0f11")]
 pub struct UpdateConfigAccountInstructionAccounts {
     pub admin: solana_sdk::pubkey::Pubkey,
     pub amm_config: solana_sdk::pubkey::Pubkey,
@@ -16,7 +20,7 @@ pub struct UpdateConfigAccountInstructionAccounts {
 impl carbon_core::deserialize::ArrangeAccounts for UpdateConfigAccount {
     type ArrangedAccounts = UpdateConfigAccountInstructionAccounts;
 
-fn arrange_accounts(
+    fn arrange_accounts(
         accounts: Vec<solana_sdk::instruction::AccountMeta>,
     ) -> Option<Self::ArrangedAccounts> {
         let admin = accounts.get(0)?;

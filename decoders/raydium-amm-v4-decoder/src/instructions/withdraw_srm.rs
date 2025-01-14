@@ -1,4 +1,5 @@
 use carbon_core::{borsh, CarbonDeserialize};
+
 #[derive(
     CarbonDeserialize, Debug, serde::Serialize, serde::Deserialize, PartialEq, Eq, Clone, Hash,
 )]
@@ -7,6 +8,10 @@ pub struct WithdrawSrm {
     pub amount: u64,
 }
 
+#[derive(
+    CarbonDeserialize, Debug, serde::Serialize, serde::Deserialize, PartialEq, Eq, Clone, Hash,
+)]
+#[carbon(discriminator = "0x0811")]
 pub struct WithdrawSrmInstructionAccounts {
     pub token_program: solana_sdk::pubkey::Pubkey,
     pub amm: solana_sdk::pubkey::Pubkey,
@@ -19,7 +24,7 @@ pub struct WithdrawSrmInstructionAccounts {
 impl carbon_core::deserialize::ArrangeAccounts for WithdrawSrm {
     type ArrangedAccounts = WithdrawSrmInstructionAccounts;
 
-fn arrange_accounts(
+    fn arrange_accounts(
         accounts: Vec<solana_sdk::instruction::AccountMeta>,
     ) -> Option<Self::ArrangedAccounts> {
         let token_program = accounts.get(0)?;

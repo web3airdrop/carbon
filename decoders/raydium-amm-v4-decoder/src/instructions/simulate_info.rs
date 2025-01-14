@@ -1,16 +1,20 @@
-
-use carbon_core::{borsh, CarbonDeserialize};
 use super::super::types::*;
+use carbon_core::{borsh, CarbonDeserialize};
 
-
-#[derive(CarbonDeserialize, Debug, serde::Serialize, serde::Deserialize, PartialEq, Eq, Clone, Hash)]
+#[derive(
+    CarbonDeserialize, Debug, serde::Serialize, serde::Deserialize, PartialEq, Eq, Clone, Hash,
+)]
 #[carbon(discriminator = "0x0c")]
-pub struct SimulateInfo{
+pub struct SimulateInfo {
     pub param: u8,
     pub swap_base_in_value: Option<SwapInstructionBaseIn>,
     pub swap_base_out_value: Option<SwapInstructionBaseOut>,
 }
 
+#[derive(
+    CarbonDeserialize, Debug, serde::Serialize, serde::Deserialize, PartialEq, Eq, Clone, Hash,
+)]
+#[carbon(discriminator = "0x0c11")]
 pub struct SimulateInfoInstructionAccounts {
     pub amm: solana_sdk::pubkey::Pubkey,
     pub amm_authority: solana_sdk::pubkey::Pubkey,
@@ -25,7 +29,9 @@ pub struct SimulateInfoInstructionAccounts {
 impl carbon_core::deserialize::ArrangeAccounts for SimulateInfo {
     type ArrangedAccounts = SimulateInfoInstructionAccounts;
 
-    fn arrange_accounts(accounts: Vec<solana_sdk::instruction::AccountMeta>) -> Option<Self::ArrangedAccounts> {
+    fn arrange_accounts(
+        accounts: Vec<solana_sdk::instruction::AccountMeta>,
+    ) -> Option<Self::ArrangedAccounts> {
         let amm = accounts.get(0)?;
         let amm_authority = accounts.get(1)?;
         let amm_open_orders = accounts.get(2)?;

@@ -12,6 +12,7 @@ pub struct SwapBaseIn {
 #[derive(
     CarbonDeserialize, Debug, serde::Serialize, serde::Deserialize, PartialEq, Eq, Clone, Hash,
 )]
+#[carbon(discriminator = "0x0911")]
 pub struct SwapBaseInInstructionAccounts {
     pub spl_token_id: solana_sdk::pubkey::Pubkey,
     pub amm_id: solana_sdk::pubkey::Pubkey,

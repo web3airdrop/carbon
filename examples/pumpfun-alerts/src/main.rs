@@ -1,12 +1,13 @@
 use async_trait::async_trait;
+use carbon_core::deserialize::ArrangeAccounts;
 use carbon_core::{
     error::CarbonResult, instruction::InstructionProcessorInputType, metrics::MetricsCollection,
     processor::Processor,
 };
 
-use carbon_pumpfun_decoder::{instructions::PumpfunInstruction, PumpfunDecoder};
+use carbon_pumpfun_decoder::instructions::{buy::Buy, sell::Sell, PumpfunInstruction};
+use carbon_pumpfun_decoder::PumpfunDecoder;
 use carbon_yellowstone_grpc_datasource::YellowstoneGrpcGeyserClient;
-use solana_sdk::message::VersionedMessage;
 use solana_sdk::pubkey;
 use solana_sdk::{native_token::LAMPORTS_PER_SOL, pubkey::Pubkey};
 use std::{
@@ -79,30 +80,49 @@ impl Processor for PumpfunInstructionProcessor {
 
     async fn process(
         &mut self,
-        data: Self::InputType,
+        (metadata, instruction, _nested_instructions): Self::InputType,
         _metrics: Arc<MetricsCollection>,
     ) -> CarbonResult<()> {
-        let pumpfun_instruction: PumpfunInstruction = data.1.data;
-        let metadata = data.0.transaction_metadata;
+        let pumpfun_instruction: PumpfunInstruction = instruction.data;
+        let accounts = instruction.accounts;
 
-        let message = metadata.message;
-        let signature = metadata.signature;
+        // get slot and signature
+        let transaction_metadata = metadata.transaction_metadata;
+        let _slot = transaction_metadata.slot;
+        let signature = transaction_metadata.signature;
+        let _fee_payer = transaction_metadata.fee_payer;
 
         match pumpfun_instruction {
             PumpfunInstruction::CreateEvent(create_event) => {
                 println!("\nNew token created: {:#?}", create_event);
             }
+
             PumpfunInstruction::TradeEvent(trade_event) => {
                 if trade_event.sol_amount >= 5 * LAMPORTS_PER_SOL {
                     println!("\nBig trade occured: {:#?}", trade_event);
                 }
             }
+
             PumpfunInstruction::CompleteEvent(complete_event) => {
                 println!("\nBonded: {:#?}", complete_event);
             }
+
             PumpfunInstruction::Buy(buy) => {
                 println!("\n signature: {:#?}\n Buy: {:#?}", signature, buy);
+                println!(
+                    "\n Buy ArrangedAccounts: {:#?}\n",
+                    Buy::arrange_accounts(accounts)
+                );
             }
+
+            PumpfunInstruction::Sell(sell) => {
+                println!("\n signature: {:#?}\n Sell: {:#?}", signature, sell);
+                println!(
+                    "\n Sell ArrangedAccounts: {:#?}\n",
+                    Sell::arrange_accounts(accounts)
+                );
+            }
+
             _ => {}
         };
 
