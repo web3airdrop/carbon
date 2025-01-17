@@ -1,7 +1,7 @@
 [package]
 name = "carbon-core"
 version = "0.4.0"
-edition = "2018"
+edition = "2021"
 description = "Core library for Carbon"
 license = "MIT"
 
@@ -14,16 +14,16 @@ solana-transaction-status = { workspace = true }
 solana-client = { workspace = true }
 solana-sdk = { workspace = true }
 
-async-trait = "0.1.82"
-futures = "0.3.30"
-log = "0.4.22"
-thiserror = "1.0.63"
-tokio = "1.40.0"
-serde = "1.0.144"
-serde_json = "1.0.85"
-bs58 = "0.5.1"
-borsh = { version = "0.10.3" }
-tokio-util = "0.7.12"
+async-trait = "0.1"
+futures = "0.3"
+log = "0.4"
+thiserror = "2.0"
+tokio = "1.40"
+serde = "1.0"
+serde_json = "1.0"
+bs58 = "0.5"
+borsh = { version = "0.10" }
+tokio-util = "0.7"
 
 # Optional macro dependencies
 carbon-proc-macros = { workspace = true, optional = true }
