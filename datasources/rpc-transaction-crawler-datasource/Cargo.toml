@@ -15,7 +15,7 @@ solana-sdk = { workspace = true }
 
 carbon-core = { workspace = true }
 
-tokio = { version = "1.40", features = ["full"] }
+tokio = { version = "1.43", features = ["full"] }
 tokio-util = "0.7"
 async-trait = "0.1"
 log = "0.4"
