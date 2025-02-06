@@ -18,6 +18,10 @@ pub struct Swap {
     pub host_fee: u64,
 }
 
+#[derive(
+    CarbonDeserialize, Debug, serde::Serialize, serde::Deserialize, PartialEq, Eq, Clone, Hash,
+)]
+#[carbon(discriminator = "0xe445a52e51cb9a1d516ce3becdd00ac1")]
 pub struct SwapInstructionAccounts {
     pub lb_pair: solana_sdk::pubkey::Pubkey,
     pub bin_array_bitmap_extension: solana_sdk::pubkey::Pubkey,
