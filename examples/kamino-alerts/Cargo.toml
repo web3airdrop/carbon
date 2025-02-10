@@ -11,7 +11,7 @@ solana-client = { workspace = true }
 carbon-yellowstone-grpc-datasource = { workspace = true }
 carbon-kamino-lending-decoder = { workspace = true }
 
-yellowstone-grpc-proto = { version = "4.2" }
+yellowstone-grpc-proto = { version = "5" }
 
 tokio = { version = "1.43", features = ["full"] }
 async-trait = "0.1.83"
