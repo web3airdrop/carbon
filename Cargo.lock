@@ -994,6 +994,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "carbon-lifinity-amm-v2-decoder"
+version = "0.5.0"
+dependencies = [
+ "carbon-core",
+ "carbon-macros",
+ "carbon-proc-macros",
+ "serde",
+ "solana-sdk",
+]
+
+[[package]]
 name = "carbon-log-metrics"
 version = "0.5.0"
 dependencies = [
@@ -1093,6 +1104,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "carbon-phoenix-v1-decoder"
+version = "0.5.0"
+dependencies = [
+ "carbon-core",
+ "carbon-macros",
+ "carbon-proc-macros",
+ "serde",
+ "solana-sdk",
+]
+
+[[package]]
 name = "carbon-proc-macros"
 version = "0.5.0"
 dependencies = [
@@ -1163,6 +1185,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "carbon-raydium-liquidity-locking-decoder"
+version = "0.5.0"
+dependencies = [
+ "carbon-core",
+ "carbon-macros",
+ "carbon-proc-macros",
+ "serde",
+ "solana-sdk",
+]
+
+[[package]]
 name = "carbon-rpc-block-subscribe-datasource"
 version = "0.5.0"
 dependencies = [
@@ -1222,6 +1255,28 @@ dependencies = [
 ]
 
 [[package]]
+name = "carbon-stabble-stable-swap-decoder"
+version = "0.5.0"
+dependencies = [
+ "carbon-core",
+ "carbon-macros",
+ "carbon-proc-macros",
+ "serde",
+ "solana-sdk",
+]
+
+[[package]]
+name = "carbon-stabble-weighted-swap-decoder"
+version = "0.5.0"
+dependencies = [
+ "carbon-core",
+ "carbon-macros",
+ "carbon-proc-macros",
+ "serde",
+ "solana-sdk",
+]
+
+[[package]]
 name = "carbon-system-program-decoder"
 version = "0.5.0"
 dependencies = [
@@ -1270,6 +1325,18 @@ dependencies = [
  "tokio-util",
  "yellowstone-grpc-client",
  "yellowstone-grpc-proto",
+]
+
+[[package]]
+name = "carbon-zeta-decoder"
+version = "0.5.0"
+dependencies = [
+ "carbon-core",
+ "carbon-macros",
+ "carbon-proc-macros",
+ "serde",
+ "serde-big-array",
+ "solana-sdk",
 ]
 
 [[package]]
